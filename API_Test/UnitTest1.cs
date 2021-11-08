@@ -55,9 +55,9 @@ namespace API_Test
 
             List<RootObject> users = new JsonDeserializer().Deserialize<List<RootObject>>(response);
 
-           var output = users.Where(u => u.Email == "Shanna@melissa.tv");
+           var u = users.Where(u => u.Email == "Shanna@melissa.tv").FirstOrDefault();
           
-           foreach (var u in output)
+          // foreach (var u in output)
            
             Assert.Multiple(() =>
             {
