@@ -4,12 +4,14 @@ using RestSharp;
 using RestSharp.Serialization.Json;
 using System.Collections.Generic;
 using System.Net;
-
+using System.Linq;
 
 namespace API_Test
-{ 
-    public class Tests
+{
+    public class Tests 
     {
+
+
         [SetUp]
         public void Setup()
         {
@@ -19,15 +21,14 @@ namespace API_Test
         [Test]
         public void Test1()
         {
-            RestClient client = new RestClient("https://jsonplaceholder.typicode.com/users");
-            RestRequest request = new RestRequest(Method.GET);
-            IRestResponse response = client.Execute(request);
 
-            var content = response.Content;
-            List <RootObject> users = JsonConvert.DeserializeObject<List<RootObject>>(content);
+            var request = new BaseTest();
+            var response = request.BaseApiTest();
+            //List <RootObject> users = JsonConvert.DeserializeObject<List<RootObject>>(content);
 
 
-            //List<RootObject> user = new JsonDeserializer().Deserialize<List<RootObject>>(response);
+            List<RootObject> users = new JsonDeserializer().Deserialize<List<RootObject>>(response);
+            
 
 
             foreach (var user in users)
@@ -40,9 +41,8 @@ namespace API_Test
         [Test]
         public void Test2()
         {
-            RestClient client = new RestClient("https://jsonplaceholder.typicode.com/users");
-            RestRequest request = new RestRequest(Method.GET);
-            IRestResponse response = client.Execute(request);
+            var request = new BaseTest();
+            var response = request.BaseApiTest();
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         }
@@ -50,23 +50,21 @@ namespace API_Test
         [Test]
         public void Test3()
         {
-            RestClient client = new RestClient("https://jsonplaceholder.typicode.com");
-            RestRequest request = new RestRequest("users/2", Method.GET);
-            IRestResponse response = client.Execute(request);
+            var request = new BaseTest();
+            var response = request.BaseApiTest();
 
-            var content = response.Content;
+            List<RootObject> users = new JsonDeserializer().Deserialize<List<RootObject>>(response);
 
-
-            
-            RootObject user = JsonConvert.DeserializeObject<RootObject>(content);
-
+           var output = users.Where(u => u.Email == "Shanna@melissa.tv");
+          
+           foreach (var u in output)
            
             Assert.Multiple(() =>
             {
-                Assert.That(user.Address.Street, Is.EqualTo("Victor Plains"));
-                Assert.That(user.Address.Suite, Is.EqualTo("Suite 879"));             
-                Assert.That(user.Address.City, Is.EqualTo("Wisokyburgh"));
-                Assert.That(user.Address.Zipcode, Is.EqualTo("90566-7771"));
+                Assert.That(u.Address.Street, Is.EqualTo("Victor Plains"));
+                Assert.That(u.Address.Suite, Is.EqualTo("Suite 879"));             
+                Assert.That(u.Address.City, Is.EqualTo("Wisokyburgh"));
+                Assert.That(u.Address.Zipcode, Is.EqualTo("90566-7771"));
 
 
             });
